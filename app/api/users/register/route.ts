@@ -14,9 +14,12 @@ export const POST = async (req: NextRequest) => {
   }
 
   if (password < 8) {
-    return NextResponse.json({
-      error: "Password length should be more than 8 characters",
-    });
+    return NextResponse.json(
+      {
+        error: "Password length should be more than 8 characters",
+      },
+      { status: 400 },
+    );
   }
 
   try {
