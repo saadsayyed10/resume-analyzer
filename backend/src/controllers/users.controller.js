@@ -58,3 +58,20 @@ export const loginUserController = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
+export const userProfileController = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res
+        .status(401)
+        .json({ error: "Unauthorized: User token not provided" });
+    }
+
+    const user = await usersService.userProfileService(req.user.id);
+    res.status(200).json({
+      user,
+    });
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
