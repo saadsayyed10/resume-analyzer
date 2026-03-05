@@ -47,6 +47,7 @@ const SignUp = () => {
       setLoading(false);
       return;
     }
+
     try {
       const res = await registerUserAPI(name, email, password);
       const { token, user } = res.data;
