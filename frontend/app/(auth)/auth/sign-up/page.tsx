@@ -1,7 +1,9 @@
+"use client";
+
+import { registerUserAPI } from "@/api/users.api";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -10,9 +12,54 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@/hooks/useAuth";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const SignUp = () => {
+  const { hydrate, setAuth, token } = useAuth();
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    hydrate();
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      router.replace("/");
+    }
+  }, [token, router]);
+
+  const handleRegister = async () => {
+    setLoading(true);
+    if (password !== confirmPassword) {
+      alert("Password do not match");
+      setLoading(false);
+      return;
+    }
+    try {
+      const res = await registerUserAPI(name, email, password);
+      const { token, user } = res.data;
+
+      setAuth(token, user);
+      router.replace("/");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="flex justify-center items-center w-full min-h-screen">
       <Card className="w-full max-w-sm">
@@ -28,7 +75,8 @@ const SignUp = () => {
               <div className="grid gap-2">
                 <Label htmlFor="name">Name</Label>
                 <Input
-                  id="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   type="text"
                   placeholder="Trevor Santana"
                   required
@@ -37,7 +85,8 @@ const SignUp = () => {
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
-                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   type="email"
                   placeholder="t@grove.com"
                   required
@@ -47,20 +96,34 @@ const SignUp = () => {
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  type="text"
+                  required
+                />
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label htmlFor="password">Confirm Password</Label>
                 </div>
-                <Input id="confirm_password" type="password" required />
+                <Input
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  type="text"
+                  required
+                />
               </div>
             </div>
           </form>
         </CardContent>
         <CardFooter className="flex-col gap-2">
-          <Button type="submit" className="w-full">
-            Sign Up
+          <Button
+            onClick={handleRegister}
+            disabled={loading}
+            className="w-full"
+          >
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Sign Up"}
           </Button>
           <h6 className="text-center w-full uppercase font-bold text-muted-foreground text-xs">
             OR
