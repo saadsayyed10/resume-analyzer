@@ -7,13 +7,13 @@ import pandas as pd
 df = pd.read_csv("./test.csv")
 
 embeddings = GoogleGenerativeAIEmbeddings(
-    model = "models/gemini-embedding-001"
+    model="models/gemini-embedding-001"
 )
 
 db_location = "./chroma_db"
-add_documents = not os.path.exists(db_location)
+add_document = not os.path.exists(db_location)
 
-if add_documents:
+if add_document:
     documents = []
     ids = []
 
@@ -45,11 +45,11 @@ vector_store = Chroma(
     persist_directory = db_location
 )
 
-if add_documents:
-    vector_store.add_documents(documents = documents, ids = ids)
-    
+if add_document:
+    vector_store.add_documents(documents=documents, ids=ids)
+
 retriever = vector_store.as_retriever(
-    search_kwargs={
+    search_kwargs = {
         "k": 5
     }
 )
