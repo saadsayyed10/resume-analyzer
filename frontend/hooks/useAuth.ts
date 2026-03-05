@@ -14,7 +14,7 @@ export const useAuth = create<AuthState>((set) => ({
 
   setAuth: async (token, user) => {
     await localStorage.setItem("token", token);
-    await localStorage.setItem("user", user);
+    await localStorage.setItem("user", JSON.stringify(user));
 
     set({ token, user });
   },
