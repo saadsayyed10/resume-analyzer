@@ -11,8 +11,8 @@ from vector import retriever
 
 app = FastAPI()
 
-class QuestionRequest(BaseModel):
-    question: str
+class JDRequest(BaseModel):
+    job_description: str
 
 model = ChatGoogleGenerativeAI(
     model = "gemini-2.5-flash-lite",
@@ -20,49 +20,46 @@ model = ChatGoogleGenerativeAI(
 )
 
 template="""
-You are an expert in answering questions about veterinary businesses based in Pune.
+You are an expert technical recruiter and resume reviewer.
 
-CONTEXT FROM REVIEWS:
-{reviews}
+RESUME CONTENT:
+{resume_chunks}
 
-USER QUESTION:
-{question}
+JOB DESCRIPTION:
+{job_description}
 
-INSTRUCTIONS:
-1. Use the "CONTEXT FROM REVIEWS" primarily to answer the question.
-2. If the reviews don't contain the specific answer but you have general knowledge about these Pune businesses, you may provide a helpful response while mentioning that specific review data was limited.
+TASK:
+1. Analyze how well the resume matches the job description.
+2. Identify missing skills or keywords.
+3. Suggest improvements to align the resume with the job.
+4. Suggest new bullet points if needed.
+
+OUTPUT FORMAT:
+Match Score: X%
+
+Missing Skills:
+- skill 1
+- skill 2
+
+Suggested Improvements:
+- improvement 1
+- improvement 2
 """
 
 prompt = ChatPromptTemplate.from_template(template)
 chain = prompt | model
 
-@app.post("/ask")
-async def ask_question(data: QuestionRequest):
-    reviews = retriever.invoke(data.question)
+@app.post("/analyze")
+async def analyze_resume(data: JDRequest):
+    docs = retriever.invoke(data.job_description)
+    resume_chunks = "\n\n".join([doc.page_content for doc in docs])
     
     result = chain.invoke({
-        "reviews": reviews,
-        "question": data.question
+        "resume_chunks": resume_chunks,
+        "job_description": data.job_description,
     })
-
+    
     return {
-        "question": data.question,
-        "answer": result.content
+        "job_description": data.job_description,
+        "response": result.content
     }
-
-
-# while True:
-#     print("\n\n--------------------------------------------------")
-#     question = input("Ask your question (press q to quit): ")
-#     if question.lower() == "q":
-#         break
-
-#     reviews = retriever.invoke(question)
-
-#     result = chain.invoke({
-#         "reviews": reviews,
-#         "question": question
-#     })
-
-#     print("\n\n")
-#     print(result.content)
