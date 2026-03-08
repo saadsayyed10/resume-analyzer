@@ -34,6 +34,7 @@ export const resumeAnalyzeHistoryController = async (req, res) => {
 
     const resume = await resumeService.resumeAnalyzeHistoryService(req.user.id);
     res.status(200).json({
+      total: resume.length,
       data: resume,
     });
   } catch (error) {
