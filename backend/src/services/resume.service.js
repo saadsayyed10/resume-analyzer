@@ -13,3 +13,11 @@ export const analyzeResumeService = async (jobDescription, userId) => {
     },
   });
 };
+
+export const resumeAnalyzeHistoryService = async (userId) => {
+  return await prisma.resumes.findMany({
+    where: {
+      users_id: userId,
+    },
+  });
+};
