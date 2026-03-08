@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import FetchResumeHistory from "../_components/FetchResumeHistory";
 
 const Home = () => {
   const router = useRouter();
@@ -24,6 +25,7 @@ const Home = () => {
       {token ? (
         <div className="flex justify-center items-center w-full flex-col gap-y-10">
           <Button onClick={logout}>Logout</Button>
+          <FetchResumeHistory />
         </div>
       ) : (
         <div />
