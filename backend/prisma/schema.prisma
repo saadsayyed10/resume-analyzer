@@ -13,4 +13,16 @@ model users {
   email      String   @unique
   password   String
   created_at DateTime @default(now())
+
+  resume resumes[]
+}
+
+model resumes {
+  id              String   @id @default(cuid())
+  job_description String
+  response        String
+  created_at      DateTime @default(now())
+
+  users_id String?
+  users    users?  @relation(fields: [users_id], references: [id], onDelete: Cascade)
 }
