@@ -23,3 +23,20 @@ export const analyzeResumeController = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
+export const resumeAnalyzeHistoryController = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res
+        .status(401)
+        .json({ error: "Unauthorized: User token not provided" });
+    }
+
+    const resume = await resumeService.resumeAnalyzeHistoryService(req.user.id);
+    res.status(200).json({
+      data: resume,
+    });
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
