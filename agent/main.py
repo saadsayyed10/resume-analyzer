@@ -7,11 +7,12 @@ from langchain_core.prompts import ChatPromptTemplate
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from vector import retriever
+from vector import create_retriver
 
 app = FastAPI()
 
 class JDRequest(BaseModel):
+    pdf_path: str
     job_description: str
 
 model = ChatGoogleGenerativeAI(
@@ -51,6 +52,9 @@ chain = prompt | model
 
 @app.post("/analyze")
 async def analyze_resume(data: JDRequest):
+    
+    retriever = create_retriver(data.pdf_path)
+    
     docs = retriever.invoke(data.job_description)
     resume_chunks = "\n\n".join([doc.page_content for doc in docs])
     
