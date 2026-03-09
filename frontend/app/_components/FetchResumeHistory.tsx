@@ -44,6 +44,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
 import { Ellipsis, Eye, Info, Loader2, Trash, UploadCloud } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface ResumeHistory {
@@ -61,6 +62,8 @@ const FetchResumeHistory = () => {
   const [jobDescription, setJobDescription] = useState("");
 
   const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -233,7 +236,9 @@ const FetchResumeHistory = () => {
                     <TableCell>{resume.created_at.split("T")[0]}</TableCell>
                     <TableCell className="cursor-pointer">
                       <DropdownMenu>
-                        <DropdownMenuTrigger>
+                        <DropdownMenuTrigger
+                          onClick={() => router.push(`/resume/${resume.id}`)}
+                        >
                           <Ellipsis className="stroke-[1.5] w-5 h-5 cursor-pointer" />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-40" align="start">
