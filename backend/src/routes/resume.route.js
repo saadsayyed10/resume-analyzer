@@ -11,6 +11,6 @@ const resumeRouter = Router();
 resumeRouter.post("/analyze", protectRoute, analyzeResumeController);
 resumeRouter.get("/history", protectRoute, resumeAnalyzeHistoryController);
 
-resumeRouter.get("/delete/:resumeId", protectRoute, deleteResumeController);
+resumeRouter.delete("/delete/:resumeId", protectRoute, deleteResumeController);
 
 export default resumeRouter;

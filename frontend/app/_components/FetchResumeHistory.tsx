@@ -1,6 +1,10 @@
 "use client";
 
-import { analyzeResumeAPI, fetchResumeHistoryAPI } from "@/api/resume.api";
+import {
+  analyzeResumeAPI,
+  deleteResumeAPI,
+  fetchResumeHistoryAPI,
+} from "@/api/resume.api";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -111,6 +115,19 @@ const FetchResumeHistory = () => {
     }
   };
 
+  const deleteResume = async (resumeId: string) => {
+    setLoading(true);
+    try {
+      await deleteResumeAPI(resumeId, token!);
+      console.log("Resume deleted");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      getHistory();
+      setLoading(false);
+    }
+  };
+
   const tableHeadings = [
     {
       name: "Sr. No",
@@ -171,7 +188,11 @@ const FetchResumeHistory = () => {
                 />
               </div>
               <Button onClick={analyzeResume} className="mt-4">
-                Submit
+                {loading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  "Submit"
+                )}
               </Button>
             </DialogContent>
           </Dialog>
@@ -220,8 +241,16 @@ const FetchResumeHistory = () => {
                             <DropdownMenuItem className="flex justify-between items-center w-full px-6 cursor-pointer">
                               View <Eye />
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="flex justify-between items-center w-full px-6 cursor-pointer text-red-500">
-                              Delete <Trash className="text-red-500" />
+                            <DropdownMenuItem
+                              onClick={() => deleteResume(resume.id)}
+                              className="flex justify-between items-center w-full px-6 cursor-pointer text-red-500"
+                            >
+                              Delete{" "}
+                              {loading ? (
+                                <Loader2 className="animate-spin text-red-500" />
+                              ) : (
+                                <Trash className="text-red-500" />
+                              )}
                             </DropdownMenuItem>
                           </DropdownMenuGroup>
                         </DropdownMenuContent>
