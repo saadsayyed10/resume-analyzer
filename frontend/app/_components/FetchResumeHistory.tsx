@@ -178,9 +178,18 @@ const FetchResumeHistory = () => {
             <DialogContent>
               <DialogTitle>Analyze Resume:</DialogTitle>
               <div className="flex justify-start items-start w-full mt-6 flex-col gap-y-4">
-                <button className="flex justify-center items-center w-full px-8 py-4 border border-gray-400 rounded-md bg-gray-100/40 cursor-pointer hover:bg-gray-100 transition">
-                  <UploadCloud className="w-8 h-8 stroke-1 text-gray-700" />
-                </button>
+                <div className="relative w-full hover:bg-gray-200 rounded-md">
+                  <button className="flex flex-col gap-y-2 justify-center items-center w-full px-8 py-4 border border-gray-400 rounded-md bg-gray-100/40 hover:bg-gray-100 transition">
+                    <UploadCloud className="w-8 h-8 stroke-[1.5] text-black" />
+                    <span className="font-medium">Upload Resume</span>
+                  </button>
+
+                  <Input
+                    type="file"
+                    accept="application/pdf"
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                </div>
                 <Textarea
                   className="border border-gray-400 h-40 resize-none overflow-y-auto"
                   placeholder="Type or Copy and Paste Job Description..."
