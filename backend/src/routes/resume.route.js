@@ -6,10 +6,16 @@ import {
   viewResumeAnalyzeController,
 } from "../controllers/resume.controller.js";
 import { protectRoute } from "../middleware/auth.middleware.js";
+import { upload } from "../lib/multer.js";
 
 const resumeRouter = Router();
 
-resumeRouter.post("/analyze", protectRoute, analyzeResumeController);
+resumeRouter.post(
+  "/analyze",
+  protectRoute,
+  upload.single("resume"),
+  analyzeResumeController,
+);
 resumeRouter.get("/history", protectRoute, resumeAnalyzeHistoryController);
 
 resumeRouter.get("/:resumeId", protectRoute, viewResumeAnalyzeController);

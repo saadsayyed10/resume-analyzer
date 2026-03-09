@@ -8,9 +8,16 @@ export const analyzeResumeController = async (req, res) => {
         .json({ error: "Unauthorized: User token not provided" });
     }
 
+    if (!req.file) {
+      return res.status(400).json({ error: "Required PDF file is missing" });
+    }
+
+    const pdfPath = req.file.path;
+
     const { jobDescription } = req.body;
 
     const resume = await resumeService.analyzeResumeService(
+      pdfPath,
       jobDescription,
       req.user.id,
     );

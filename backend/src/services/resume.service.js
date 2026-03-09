@@ -1,8 +1,9 @@
 import axios from "axios";
 import prisma from "../lib/prisma.orm.js";
 
-export const analyzeResumeService = async (jobDescription, userId) => {
+export const analyzeResumeService = async (pdfPath, jobDescription, userId) => {
   const res = await axios.post(process.env.AI_URL, {
+    pdf_path: pdfPath,
     job_description: jobDescription.trim(),
   });
   return await prisma.resumes.create({
