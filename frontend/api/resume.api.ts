@@ -10,12 +10,12 @@ export const fetchResumeHistoryAPI = async (token: string) => {
 };
 
 export const analyzeResumeAPI = async (
-  job_description: string,
+  jobDescription: string,
   token: string,
 ) => {
   return await axios.post(
     `${API_URL}/resume/analyze`,
-    { job_description },
+    { jobDescription },
     {
       headers: {
         Authorization: `Bearer ${token}`,

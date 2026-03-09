@@ -1,6 +1,6 @@
 "use client";
 
-import { fetchResumeHistoryAPI } from "@/api/resume.api";
+import { analyzeResumeAPI, fetchResumeHistoryAPI } from "@/api/resume.api";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -47,6 +47,8 @@ const FetchResumeHistory = () => {
   const [data, setData] = useState<ResumeHistory[]>([]);
   const [total, setTotal] = useState(0);
 
+  const [jobDescription, setJobDescription] = useState("");
+
   const [loading, setLoading] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -72,22 +74,35 @@ const FetchResumeHistory = () => {
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
-  useEffect(() => {
-    const getHistory = async () => {
-      setLoading(true);
-      try {
-        const res = await fetchResumeHistoryAPI(token!);
-        setData(res.data.data);
-        setTotal(res.data.total);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const getHistory = async () => {
+    setLoading(true);
+    try {
+      const res = await fetchResumeHistoryAPI(token!);
+      setData(res.data.data);
+      setTotal(res.data.total);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     getHistory();
   }, []);
+
+  const analyzeResume = async () => {
+    setLoading(true);
+    try {
+      await analyzeResumeAPI(jobDescription.trim(), token!);
+      console.log("Resume analyzed");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      getHistory();
+      setLoading(false);
+    }
+  };
 
   const tableHeadings = [
     {
@@ -144,9 +159,13 @@ const FetchResumeHistory = () => {
                 <Textarea
                   className="border border-gray-400 h-40 resize-none overflow-y-auto"
                   placeholder="Type or Copy and Paste Job Description..."
+                  value={jobDescription}
+                  onChange={(e) => setJobDescription(e.target.value)}
                 />
               </div>
-              <Button className="mt-4">Submit</Button>
+              <Button onClick={analyzeResume} className="mt-4">
+                Submit
+              </Button>
             </DialogContent>
           </Dialog>
         </h1>
