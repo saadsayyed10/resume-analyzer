@@ -30,3 +30,12 @@ export const deleteResumeService = async (userId, resumeId) => {
     },
   });
 };
+
+export const viewResumeAnalyzeService = async (userId, resumeId) => {
+  return await prisma.resumes.findUnique({
+    where: {
+      users_id: userId,
+      id: resumeId,
+    },
+  });
+};
