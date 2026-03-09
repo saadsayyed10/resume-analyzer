@@ -31,3 +31,11 @@ export const deleteResumeAPI = async (resumeId: string, token: string) => {
     },
   });
 };
+
+export const viewResumeAPI = async (resumeId: string, token: string) => {
+  return await axios.get(`${API_URL}/resume/${resumeId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
