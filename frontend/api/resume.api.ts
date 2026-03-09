@@ -10,18 +10,21 @@ export const fetchResumeHistoryAPI = async (token: string) => {
 };
 
 export const analyzeResumeAPI = async (
+  file: File,
   jobDescription: string,
   token: string,
 ) => {
-  return await axios.post(
-    `${API_URL}/resume/analyze`,
-    { jobDescription },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+  const formData = new FormData();
+
+  formData.append("resume", file);
+  formData.append("jobDescription", jobDescription);
+
+  return await axios.post(`${API_URL}/resume/analyze`, formData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "multipart/form-data",
     },
-  );
+  });
 };
 
 export const deleteResumeAPI = async (resumeId: string, token: string) => {

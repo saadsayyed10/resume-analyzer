@@ -59,6 +59,7 @@ const FetchResumeHistory = () => {
   const [data, setData] = useState<ResumeHistory[]>([]);
   const [total, setTotal] = useState(0);
 
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [jobDescription, setJobDescription] = useState("");
 
   const [loading, setLoading] = useState(false);
@@ -104,9 +105,17 @@ const FetchResumeHistory = () => {
   }, []);
 
   const analyzeResume = async () => {
+    if (!resumeFile) {
+      alert("Please upload a resume PDF");
+      return;
+    }
+
     setLoading(true);
+
+    console.log({ resumeFile, jobDescription });
+
     try {
-      await analyzeResumeAPI(jobDescription.trim(), token!);
+      await analyzeResumeAPI(resumeFile, jobDescription.trim(), token!);
       console.log("Resume analyzed");
     } catch (error) {
       console.log(error);
@@ -188,6 +197,10 @@ const FetchResumeHistory = () => {
                     type="file"
                     accept="application/pdf"
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) setResumeFile(file);
+                    }}
                   />
                 </div>
                 <Textarea

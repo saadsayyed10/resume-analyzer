@@ -17,7 +17,10 @@ def create_retriver(pdf_path):
 
     # delete old vector database
     if os.path.exists(db_location):
-        shutil.rmtree(db_location)
+        try:
+            shutil.rmtree(db_location)
+        except PermissionError:
+            pass
 
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=800,
