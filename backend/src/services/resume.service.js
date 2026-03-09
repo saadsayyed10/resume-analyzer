@@ -21,3 +21,12 @@ export const resumeAnalyzeHistoryService = async (userId) => {
     },
   });
 };
+
+export const deleteResumeService = async (userId, resumeId) => {
+  return await prisma.resumes.delete({
+    where: {
+      users_id: userId,
+      id: resumeId,
+    },
+  });
+};
