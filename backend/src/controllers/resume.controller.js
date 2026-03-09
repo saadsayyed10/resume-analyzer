@@ -63,3 +63,28 @@ export const deleteResumeController = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
+export const viewResumeAnalyzeController = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res
+        .status(401)
+        .json({ error: "Unauthorized: User token not provided" });
+    }
+
+    const { resumeId } = req.params;
+    if (!resumeId) {
+      return res.status(404).json({ error: "Resume ID not found" });
+    }
+
+    const resume = await resumeService.viewResumeAnalyzeService(
+      req.user.id,
+      resumeId,
+    );
+    res.status(200).json({
+      data: resume,
+    });
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
