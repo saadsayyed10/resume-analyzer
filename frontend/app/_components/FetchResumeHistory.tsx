@@ -8,6 +8,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
   Pagination,
@@ -32,7 +39,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
-import { Ellipsis, Info, Loader2, UploadCloud } from "lucide-react";
+import { Ellipsis, Eye, Info, Loader2, Trash, UploadCloud } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface ResumeHistory {
@@ -204,7 +211,21 @@ const FetchResumeHistory = () => {
                     </TableCell>
                     <TableCell>{resume.created_at.split("T")[0]}</TableCell>
                     <TableCell className="cursor-pointer">
-                      <Ellipsis className="stroke-[1.5] w-5 h-5" />
+                      <DropdownMenu>
+                        <DropdownMenuTrigger>
+                          <Ellipsis className="stroke-[1.5] w-5 h-5 cursor-pointer" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-40" align="start">
+                          <DropdownMenuGroup>
+                            <DropdownMenuItem className="flex justify-between items-center w-full px-6 cursor-pointer">
+                              View <Eye />
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="flex justify-between items-center w-full px-6 cursor-pointer text-red-500">
+                              Delete <Trash className="text-red-500" />
+                            </DropdownMenuItem>
+                          </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   </TableRow>
                 ))
