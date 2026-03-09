@@ -35,10 +35,12 @@ const Home = () => {
             <h1 className="font-light text-2xl">
               <span className="font-medium text-4xl">D</span>elphina
             </h1>
-            <div className="flex justify-end items-center w-full gap-x-2">
+            <div className="flex justify-end items-center w-full gap-x-1">
               <Dialog>
-                <DialogTrigger>
-                  <User2 className="w-4 h-4 cursor-pointer" />
+                <DialogTrigger asChild>
+                  <Button variant={"ghost"}>
+                    <User2 />
+                  </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogTitle>Your Information:</DialogTitle>

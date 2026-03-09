@@ -2,7 +2,21 @@
 
 import { fetchResumeHistoryAPI } from "@/api/resume.api";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import {
   Table,
   TableBody,
@@ -11,6 +25,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Tooltip,
   TooltipContent,
@@ -36,7 +51,7 @@ const FetchResumeHistory = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const itemsPerPage = 10;
+  const itemsPerPage = 6;
 
   const filteredData = data.filter(
     (resume) =>
@@ -113,52 +128,103 @@ const FetchResumeHistory = () => {
           </Tooltip>
         </div>
         <h1>
-          <Button size={"lg"} className="flex items-center">
-            <span>Analyze Resume</span>
-            <UploadCloud />
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button size={"lg"} className="flex items-center">
+                <span>Analyze Resume</span>
+                <UploadCloud />
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogTitle>Analyze Resume:</DialogTitle>
+              <div className="flex justify-start items-start w-full mt-6 flex-col gap-y-4">
+                <button className="flex justify-center items-center w-full px-8 py-4 border border-gray-400 rounded-md bg-gray-100/40 cursor-pointer hover:bg-gray-100 transition">
+                  <UploadCloud className="w-8 h-8 stroke-1 text-gray-700" />
+                </button>
+                <Textarea
+                  className="border border-gray-400 h-40 resize-none overflow-y-auto"
+                  placeholder="Type or Copy and Paste Job Description..."
+                />
+              </div>
+              <Button className="mt-4">Submit</Button>
+            </DialogContent>
+          </Dialog>
         </h1>
       </div>
       {!loading ? (
-        <Table>
-          <TableHeader className="bg-neutral-800 border">
-            <TableRow>
-              {tableHeadings.map((tH, idx) => (
-                <TableHead key={idx} className="text-neutral-100">
-                  {tH.name}
-                </TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody className="border">
-            {paginatedData.length === 0 ? (
+        <>
+          <Table>
+            <TableHeader className="bg-neutral-800 border">
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-6">
-                  No resumes found
-                </TableCell>
+                {tableHeadings.map((tH, idx) => (
+                  <TableHead key={idx} className="text-neutral-100">
+                    {tH.name}
+                  </TableHead>
+                ))}
               </TableRow>
-            ) : (
-              paginatedData.map((resume, idx) => (
-                <TableRow
-                  className={`${idx % 2 === 0 && "bg-neutral-100"}`}
-                  key={resume.id}
-                >
-                  <TableCell className="font-medium">{idx + 1}</TableCell>
-                  <TableCell className="truncate max-w-40">
-                    {resume.job_description}
-                  </TableCell>
-                  <TableCell className="truncate max-w-40">
-                    {resume.response}
-                  </TableCell>
-                  <TableCell>{resume.created_at.split("T")[0]}</TableCell>
-                  <TableCell className="cursor-pointer">
-                    <Ellipsis className="stroke-[1.5] w-5 h-5" />
+            </TableHeader>
+            <TableBody className="border">
+              {paginatedData.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center py-6">
+                    No resumes found
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              ) : (
+                paginatedData.map((resume, idx) => (
+                  <TableRow
+                    className={`${idx % 2 === 0 && "bg-neutral-100"}`}
+                    key={resume.id}
+                  >
+                    <TableCell className="font-medium">{idx + 1}</TableCell>
+                    <TableCell className="truncate max-w-40">
+                      {resume.job_description}
+                    </TableCell>
+                    <TableCell className="truncate max-w-40">
+                      {resume.response}
+                    </TableCell>
+                    <TableCell>{resume.created_at.split("T")[0]}</TableCell>
+                    <TableCell className="cursor-pointer">
+                      <Ellipsis className="stroke-[1.5] w-5 h-5" />
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+          {paginatedData.length !== 0 && (
+            <Pagination className="mt-6">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.max(prev - 1, 1))
+                    }
+                    // disabled={currentPage === 1}
+                  />
+                </PaginationItem>
+                {Array.from({ length: totalPages }).map((_, index) => (
+                  <PaginationItem key={index}>
+                    <PaginationLink
+                      isActive={currentPage === index + 1}
+                      onClick={() => setCurrentPage(index + 1)}
+                    >
+                      {index + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                    }
+                    // disabled={currentPage === totalPages}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
+        </>
       ) : (
         <div className="flex justify-center items-center w-full">
           <Loader2 className="w-10 h-10 animate-spin" />
